@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birthday App — AI Orchestrator Workflow</title>
+<style>
+:root{
+  --bg:#f6f7fb;--surface:#fff;--text:#172033;--muted:#687386;--line:#e3e7ef;
+  --purple:#9b4bc2;--blue:#209fd0;--green:#18b98c;--yellow:#e5ac1c;
+  --orange:#f07838;--red:#e64b67;--shadow:0 8px 28px rgba(31,42,68,.07);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit;cursor:pointer}
+.app{max-width:1440px;margin:auto;padding:28px clamp(16px,3vw,42px) 48px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:12px}
+.brandmark{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#efe1f7;color:#8135a6;font-size:23px}
+.eyebrow{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.12em;font-weight:750}
+h1{font-size:clamp(26px,3vw,38px);line-height:1.15;letter-spacing:-.04em;margin:4px 0}
+.subtitle{color:var(--muted);margin:7px 0 0;max-width:720px}
+.top-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;color:var(--text);font-weight:650}
+.btn.primary{background:#252b40;color:white;border-color:#252b40}.app-link{text-decoration:none;display:inline-block}
+.hero{background:linear-gradient(120deg,#282d45,#44315e);color:#fff;border-radius:20px;padding:24px 26px;display:grid;grid-template-columns:1.5fr 1fr;gap:20px;box-shadow:var(--shadow)}
+.hero h2{font-size:23px;margin:0 0 8px;letter-spacing:-.025em}
+.hero p{color:#e0ddec;margin:0;max-width:690px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-self:center}
+.stat{border:1px solid #ffffff2e;background:#ffffff0c;border-radius:13px;padding:14px}
+.stat strong{display:block;font-size:24px;line-height:1.2}.stat span{font-size:12px;color:#e0ddec}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:28px 0 14px}
+.section-head h2{font-size:20px;letter-spacing:-.025em;margin:0}
+.section-head p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:7px;border-radius:99px;background:#e9f8f1;color:#16744f;padding:6px 10px;font-size:12px;font-weight:750}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor}
+.flow{display:grid;grid-template-columns:repeat(7,minmax(145px,1fr));gap:10px;overflow-x:auto;padding:2px 2px 12px}
+.step{position:relative;text-align:left;min-width:145px;background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:14px 13px 13px;box-shadow:0 2px 5px #18233b05;transition:.18s transform,.18s box-shadow,.18s border-color}
+.step:hover,.step:focus-visible{transform:translateY(-3px);box-shadow:var(--shadow);outline:none}
+.step.active{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 17%,transparent)}
+.step-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.step-icon{display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:color-mix(in srgb,var(--accent) 13%,white);color:var(--accent);font-size:20px}
+.step-num{font-size:11px;font-weight:800;color:var(--accent);letter-spacing:.07em}
+.step h3{font-size:14px;line-height:1.25;margin:0 0 7px}
+.step p{font-size:12px;color:var(--muted);margin:0;min-height:54px}
+.step .mini{display:block;margin-top:13px;padding-top:10px;border-top:1px solid var(--line);font-size:11px;font-weight:750;color:var(--accent)}
+.gatebar{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:4px 0 0}
+.gate{border:1px dashed #cbd2df;border-radius:10px;padding:9px 10px;background:#ffffff80;font-size:11px;color:var(--muted);text-align:center}
+.gate b{display:block;color:var(--text);font-size:12px;margin-bottom:2px}
+.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(290px,.8fr);gap:16px;margin-top:20px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 3px 12px #18233b04}
+.panel h2{font-size:17px;margin:0 0 5px}.panel-intro{color:var(--muted);font-size:13px;margin:0 0 16px}
+.detail-kicker{font-size:11px;font-weight:800;color:var(--accent);letter-spacing:.09em;text-transform:uppercase}
+.detail-title{font-size:23px;letter-spacing:-.03em;margin:5px 0 7px}
+.detail-desc{color:var(--muted);margin:0 0 17px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.detail-box{background:#f7f8fb;border:1px solid #edf0f5;border-radius:11px;padding:13px}
+.detail-box h4{margin:0 0 7px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#687386}
+.detail-box ul{padding-left:17px;margin:0;font-size:13px}
+.detail-box li+li{margin-top:5px}
+.gate-check{margin-top:13px;padding:13px;border-radius:11px;background:#fff8e8;border:1px solid #f3e4b7}
+.gate-check strong{font-size:12px;display:block;margin-bottom:4px}
+.gate-check p{font-size:13px;margin:0;color:#725719}
+.tree{font:12px/1.9 ui-monospace,SFMono-Regular,Menlo,monospace;color:#3c465b;white-space:pre;overflow:auto;background:#f8f9fc;border:1px solid #e9edf4;border-radius:12px;padding:15px;margin:0}
+.tree .folder{color:#7143a2;font-weight:800}
+.tree .file{color:#3c597f}
+.component-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.component{border:1px solid var(--line);border-radius:12px;padding:12px}
+.component .emoji{font-size:18px}.component b{display:block;font-size:13px;margin:5px 0 3px}.component p{font-size:12px;color:var(--muted);margin:0}
+.timeline{display:grid;gap:10px}
+.task{display:flex;align-items:flex-start;gap:11px}
+.task-num{display:grid;place-items:center;flex:none;width:27px;height:27px;border-radius:8px;background:#eff0f8;color:#59408d;font-weight:800;font-size:12px}
+.task b{font-size:13px;display:block}.task p{font-size:12px;color:var(--muted);margin:2px 0 0}
+.progress-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:18px 0 7px}
+.progress{height:7px;background:#e9edf4;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#9b4bc2,#209fd0);transition:width .25s}
+.checklist{display:grid;gap:9px}.checklist label{display:flex;gap:9px;align-items:flex-start;font-size:13px}.checklist input{accent-color:#7d42a2;margin-top:4px}
+.footer{margin-top:24px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:950px){.hero{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.flow{grid-template-columns:repeat(7,165px)}}
+@media(max-width:600px){.app{padding:18px 13px 30px}.topbar{align-items:flex-start}.top-actions{display:none}.hero{padding:20px}.hero-stats{grid-template-columns:repeat(3,1fr)}.stat{padding:10px}.stat strong{font-size:20px}.detail-grid{grid-template-columns:1fr}.component-list{grid-template-columns:1fr 1fr}.section-head{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandmark" aria-hidden="true">✳</div>
+      <div><div class="eyebrow">Product workflow / Codex workspace</div><h1>Birthday App Orchestrator</h1><p class="subtitle">From product definition to a tested, standalone HTML app — guided by your seven-stage UX process.</p></div>
+    </div>
+    <div class="top-actions">
+      <a class="btn primary app-link" id="openBirthdayApp" href="/birthday" target="_blank" rel="noopener">Open Birthday App ↗</a>
+      <button class="btn" id="resetBtn">Reset progress</button>
+      <button class="btn primary" id="exportBtn">Export workflow JSON</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow" style="color:#cfc2e6">AI orchestration overview</div>
+      <h2>One workflow. Clear agents. Explicit gates.</h2>
+      <p>Use Codex to execute one phase at a time. Each phase consumes defined inputs, invokes the relevant role and skill, produces artifacts, and stops at a gate until its criteria are satisfied.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><strong>7</strong><span>UX phases</span></div>
+      <div class="stat"><strong>6</strong><span>Core agents</span></div>
+      <div class="stat"><strong>7</strong><span>Approval gates</span></div>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <div><h2>01 — Workflow phases</h2><p>Select a phase to inspect inputs, skills, agents, outputs, and gate conditions.</p></div>
+    <span class="pill"><span class="dot"></span> Human approval at gates</span>
+  </div>
+  <div class="flow" id="flow" aria-label="Seven workflow phases"></div>
+  <div class="gatebar" aria-label="Gate checkpoints">
+    <div class="gate"><b>Gate 01</b>Requirements</div><div class="gate"><b>Gate 02</b>Roadmap</div><div class="gate"><b>Gate 03</b>Research</div><div class="gate"><b>Gate 04</b>Analysis</div><div class="gate"><b>Gate 05</b>Design</div><div class="gate"><b>Gate 06–07</b>QA + Release</div>
+  </div>
+
+  <div class="layout">
+    <section class="panel" aria-live="polite">
+      <div class="detail-kicker" id="detailKicker">Step 01 / Product Definition</div>
+      <h2 class="detail-title" id="detailTitle">Define the product</h2>
+      <p class="detail-desc" id="detailDesc"></p>
+      <div class="detail-grid">
+        <div class="detail-box"><h4>Inputs</h4><ul id="detailInputs"></ul></div>
+        <div class="detail-box"><h4>Agent + skill</h4><ul id="detailRoles"></ul></div>
+        <div class="detail-box"><h4>Actions</h4><ul id="detailActions"></ul></div>
+        <div class="detail-box"><h4>Outputs</h4><ul id="detailOutputs"></ul></div>
+      </div>
+      <div class="gate-check"><strong id="gateTitle">Gate 01 — Requirements approval</strong><p id="gateDesc"></p></div>
+    </section>
+
+    <section class="panel">
+      <h2>02 — Project file structure</h2>
+      <p class="panel-intro">The folder structure maps each workflow responsibility to tangible files.</p>
+      <pre class="tree"><span class="folder">birthday-reminder-app/</span>
+├── AGENTS.md
+├── README.md
+├── <span class="folder">input/</span>
+│   ├── product-brief.md
+│   ├── BRD.md
+│   └── constraints.md
+├── <span class="folder">orchestrator/</span>
+│   ├── workflow.md
+│   ├── state.md
+│   ├── plan.md
+│   └── decision-log.md
+├── <span class="folder">phases/</span>  <span class="file"># 01–07 UX stages</span>
+├── <span class="folder">gates/</span>   <span class="file"># approval checks</span>
+├── <span class="folder">skills/</span>  <span class="file"># reusable instructions</span>
+├── <span class="folder">agents/</span>  <span class="file"># role definitions</span>
+├── <span class="folder">src/</span>
+│   ├── index.html
+│   ├── styles.css
+│   └── app.js
+├── <span class="folder">tests/</span>
+└── <span class="folder">output/</span>
+    ├── index.html
+    ├── README.md
+    └── qa-report.md</pre>
+      <div class="component-list">
+        <div class="component"><span class="emoji">📥</span><b>Input</b><p>BRD, user needs, constraints.</p></div>
+        <div class="component"><span class="emoji">🧭</span><b>Phases</b><p>Ordered development steps.</p></div>
+        <div class="component"><span class="emoji">🧰</span><b>Skills</b><p>Reusable task playbooks.</p></div>
+        <div class="component"><span class="emoji">🤖</span><b>Agents</b><p>Role-specific instructions.</p></div>
+        <div class="component"><span class="emoji">🚦</span><b>Gates</b><p>Approval and test conditions.</p></div>
+        <div class="component"><span class="emoji">📦</span><b>Output</b><p>HTML, reports, documentation.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>03 — Gate checklist</h2>
+      <p class="panel-intro">Track your own approvals here. This checklist is local to this page and is not connected to Codex automatically.</p>
+      <div class="checklist" id="checklist"></div>
+      <div class="progress-row"><span id="progressLabel">0 of 7 gates approved</span><span id="progressPct">0%</span></div>
+      <div class="progress"><span id="progressBar"></span></div>
+    </section>
+    <section class="panel">
+      <h2>04 — Run it through Codex</h2>
+      <p class="panel-intro">A practical build sequence from empty folder to release.</p>
+      <div class="timeline">
+        <div class="task"><span class="task-num">1</span><div><b>Create and open the folder</b><p>Create <code>birthday-reminder-app</code> and open it as your Codex workspace.</p></div></div>
+        <div class="task"><span class="task-num">2</span><div><b>Generate workflow files</b><p>Ask Codex to create input, phases, gates, skills, agents, and orchestrator files first.</p></div></div>
+        <div class="task"><span class="task-num">3</span><div><b>Approve each phase</b><p>Review artifacts and explicitly approve each gate before moving forward.</p></div></div>
+        <div class="task"><span class="task-num">4</span><div><b>Build and validate</b><p>Implement source files, test date behavior and persistence, and fix defects.</p></div></div>
+        <div class="task"><span class="task-num">5</span><div><b>Export final HTML</b><p>Bundle CSS and JavaScript into <code>output/index.html</code> and verify it.</p></div></div>
+      </div>
+      <button class="btn primary" id="promptBtn" style="width:100%;margin-top:18px">Copy starter prompt</button>
+    </section>
+  </div>
+  <footer class="footer"><span>Birthday App AI Orchestrator · Workflow prototype</span><span>Note: Codex follows these instructions when prompted; these files do not run agents autonomously.</span></footer>
+</div>
+<script>
+const phases=[
+ {n:"01",title:"Problem / Product Definition",short:"Define the product",icon:"◎",color:"var(--purple)",desc:"Establish the problem, target users, MVP scope, product constraints, and success criteria before implementation begins.",inputs:["Product idea and BRD","Target audience and user needs","Platform and privacy constraints"],roles:["Product Agent","Orchestrator Skill"],actions:["Clarify goals and non-goals","Define MVP and assumptions","Write measurable requirements"],outputs:["input/product-brief.md","input/BRD.md","input/constraints.md"],gate:"Gate 01 — Requirements approval",gateDesc:"Problem, users, MVP scope, assumptions, and constraints are documented and explicitly approved."},
+ {n:"02",title:"Roadmap to Get Started",short:"Plan the workflow",icon:"⌘",color:"var(--blue)",desc:"Turn the approved brief into a staged delivery plan, repository structure, file ownership, and acceptance criteria.",inputs:["Approved product brief","Existing repository, if any","Technical constraints"],roles:["Orchestrator Agent","Planning Skill"],actions:["Create folder structure","Define phases and state transitions","Assign outputs and gate criteria"],outputs:["orchestrator/workflow.md","orchestrator/plan.md","AGENTS.md"],gate:"Gate 02 — Plan approval",gateDesc:"Architecture, folder structure, milestones, and acceptance criteria are reviewed before implementation."},
+ {n:"03",title:"Research",short:"Research needs",icon:"⌕",color:"var(--green)",desc:"Investigate interaction patterns, date edge cases, accessibility, and browser capabilities without inventing research evidence.",inputs:["Approved brief","Open product questions","Browser/platform constraints"],roles:["Research Agent","Research Skill"],actions:["Separate facts from assumptions","Review birthday-management patterns","Document notification limitations"],outputs:["output/research-summary.md","orchestrator/decision-log.md"],gate:"Gate 03 — Research review",gateDesc:"Findings, assumptions, and recommendations are documented; selected recommendations are accepted."},
+ {n:"04",title:"Analyze",short:"Specify requirements",icon:"⌘",color:"var(--yellow)",desc:"Translate research and business needs into user stories, acceptance criteria, a data model, and testable behavior.",inputs:["Approved BRD","Research summary","Business rules"],roles:["Product Agent","Product Analysis Skill"],actions:["Define data model","Write user stories and acceptance criteria","Specify date and storage edge cases"],outputs:["output/requirements.md","tests/test-plan.md"],gate:"Gate 04 — Requirements sign-off",gateDesc:"Requirements are testable, edge cases are covered, and the data model is agreed."},
+ {n:"05",title:"Design",short:"Design and build",icon:"✧",color:"var(--orange)",desc:"Design the responsive experience and implement it in semantic HTML, CSS, and JavaScript.",inputs:["Approved requirements","UX patterns and accessibility needs","Design direction"],roles:["Design Agent + Frontend Agent","UX Design + Frontend Skills"],actions:["Define dashboard and forms","Implement add/edit/delete and search","Persist records locally"],outputs:["output/design-spec.md","src/index.html","src/styles.css","src/app.js"],gate:"Gate 05 — Design review",gateDesc:"Screen structure, visual direction, core interactions, and accessibility behavior are reviewed."},
+ {n:"06",title:"Validation",short:"Test the app",icon:"✓",color:"var(--red)",desc:"Verify functional behavior, date calculations, local persistence, accessibility, responsiveness, and safe rendering.",inputs:["Source implementation","Requirements and test plan","Synthetic test records"],roles:["QA Agent","QA Validation Skill"],actions:["Run automated/manual checks","Test year boundaries and leap-day policy","Record defects and rerun tests"],outputs:["output/qa-report.md","tests/manual-qa-checklist.md"],gate:"Gate 06 — QA pass",gateDesc:"Critical tests pass; unresolved high-severity defects block release. Untested checks are not marked passed."},
+ {n:"07",title:"Handover",short:"Release deliverables",icon:"⇧",color:"var(--purple)",desc:"Prepare a verified standalone HTML artifact, setup instructions, QA evidence, and documented limitations.",inputs:["Approved source code","QA report","Release checklist"],roles:["Handover Agent","Handover Skill"],actions:["Inline required CSS and JavaScript","Verify final artifact exists and works","Document use and limitations"],outputs:["output/index.html","output/README.md","output/qa-report.md"],gate:"Gate 07 — Release approval",gateDesc:"Final HTML opens and core behavior is verified; documentation and limitations are accurate."}
+];
+const flow=document.getElementById("flow");
+const listMarkup=(items)=>items.map(x=>`<li>${x}</li>`).join("");
+let selected=0;
+function renderPhase(i){
+ selected=i;const p=phases[i];
+ document.querySelectorAll(".step").forEach((el,j)=>{el.classList.toggle("active",j===i);el.setAttribute("aria-pressed",j===i?"true":"false")});
+ document.documentElement.style.setProperty("--accent",p.color);
+ document.getElementById("detailKicker").textContent=`STEP ${p.n} / ${p.title}`;
+ document.getElementById("detailTitle").textContent=p.short;
+ document.getElementById("detailDesc").textContent=p.desc;
+ document.getElementById("detailInputs").innerHTML=listMarkup(p.inputs);
+ document.getElementById("detailRoles").innerHTML=listMarkup(p.roles);
+ document.getElementById("detailActions").innerHTML=listMarkup(p.actions);
+ document.getElementById("detailOutputs").innerHTML=listMarkup(p.outputs);
+ document.getElementById("gateTitle").textContent=p.gate;
+ document.getElementById("gateDesc").textContent=p.gateDesc;
+}
+phases.forEach((p,i)=>{
+ const b=document.createElement("button");b.className="step";b.type="button";b.style.setProperty("--accent",p.color);
+ b.innerHTML=`<div class="step-top"><span class="step-icon">${p.icon}</span><span class="step-num">STEP ${p.n}</span></div><h3>${p.title}</h3><p>${p.desc.split(".")[0]}.</p><span class="mini">Explore phase ↗</span>`;
+ b.addEventListener("click",()=>renderPhase(i));b.addEventListener("keydown",e=>{if(e.key==="ArrowRight"){e.preventDefault();document.querySelectorAll(".step")[(i+1)%7].focus()}if(e.key==="ArrowLeft"){e.preventDefault();document.querySelectorAll(".step")[(i+6)%7].focus()}});
+ flow.appendChild(b);
+});
+renderPhase(0);
+const gateLabels=["Requirements approved","Roadmap approved","Research reviewed","Requirements signed off","Design approved","QA criteria passed","Release artifacts verified"];
+const checklist=document.getElementById("checklist");
+gateLabels.forEach((label,i)=>{const l=document.createElement("label");l.innerHTML=`<input type="checkbox" data-gate="${i}"><span><b>Gate ${String(i+1).padStart(2,"0")}</b> — ${label}</span>`;checklist.appendChild(l)});
+function updateProgress(){const boxes=[...checklist.querySelectorAll("input")];const n=boxes.filter(x=>x.checked).length;document.getElementById("progressLabel").textContent=`${n} of ${boxes.length} gates approved`;document.getElementById("progressPct").textContent=`${Math.round(n/boxes.length*100)}%`;document.getElementById("progressBar").style.width=`${n/boxes.length*100}%`}
+checklist.addEventListener("change",updateProgress);
+document.getElementById("resetBtn").addEventListener("click",()=>{checklist.querySelectorAll("input").forEach(x=>x.checked=false);updateProgress();renderPhase(0)});
+document.getElementById("exportBtn").addEventListener("click",()=>{const payload={project:"Birthday Reminder App",workflow:"Seven-stage UX-to-HTML orchestration",exportedAt:new Date().toISOString(),phases:phases.map(p=>({step:p.n,title:p.title,inputs:p.inputs,roles:p.roles,actions:p.actions,outputs:p.outputs,gate:p.gate})),gateStatus:[...checklist.querySelectorAll("input")].map((x,i)=>({gate:i+1,label:gateLabels[i],approved:x.checked}))};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="birthday-app-workflow.json";a.click();URL.revokeObjectURL(a.href)});
+document.getElementById("promptBtn").addEventListener("click",async()=>{const prompt="Help me build a Birthday Reminder App using a seven-stage AI orchestration workflow: Product Definition, Roadmap, Research, Analysis, Design, Validation, and Handover. Inspect this workspace first without modifying existing files. Create input/, orchestrator/, phases/, gates/, skills/, agents/, src/, tests/, and output/ with clear Markdown contracts. Define explicit phase inputs, outputs, responsible agents and skills, and approval gates. Stop at each gate until I approve. Then build a responsive app with add/edit/delete birthdays, upcoming list, search, countdowns, localStorage persistence, accessible UI, and tests. Finally create and verify output/index.html as a standalone HTML file plus README and QA report. Do not claim background notifications unless implemented and tested.";try{await navigator.clipboard.writeText(prompt);document.getElementById("promptBtn").textContent="Prompt copied ✓"}catch(e){const w=window.open("","_blank","width=600,height=450");if(w){w.document.write("<pre style='white-space:pre-wrap;font:14px sans-serif;padding:20px'>"+prompt.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+"</pre>");}document.getElementById("promptBtn").textContent="Prompt shown in new window"}});
+const birthdayAppLink=document.getElementById("openBirthdayApp");
+if(location.protocol==="file:")birthdayAppLink.href="../src/index.html";
+</script>
+</body>
+</html>

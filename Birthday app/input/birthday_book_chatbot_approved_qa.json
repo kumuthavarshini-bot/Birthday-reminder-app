@@ -1,0 +1,152 @@
+{
+  "schema_version": "1.0",
+  "knowledge_base": "Birthday Book Chatbot Approved Q&A",
+  "description": "Approved predefined questions and answers for the Birthday Book chatbot.",
+  "approval_status": "user_approved",
+  "notes": [
+    "This file contains approved Q&A content, not birthday records.",
+    "For app-help questions, prefer the approved answer when a question matches.",
+    "For birthday messages, gift suggestions, and planning, use the approved answer as a conversational starter and then generate a helpful response with the configured AI provider.",
+    "Do not claim to read, create, edit, or delete birthday records unless the chatbot is connected to the app data and the operation succeeds.",
+    "Do not claim background notifications or cross-device sync are available in the current standalone app."
+  ],
+  "fallback_answer": "I don't have enough information to answer that confidently. I can explain the app's supported features or help you rephrase your question.",
+  "items": [
+    {
+      "id": "app.add_birthday",
+      "category": "app_help",
+      "question": "How do I add a birthday?",
+      "answer": "Select Add birthday, enter the person's name and birthday, add any optional details, choose your planning reminders, and select Save birthday.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "app.edit_delete_birthday",
+      "category": "app_help",
+      "question": "How do I edit or delete a birthday?",
+      "answer": "Find the person in your birthday list. Select Edit to update their details, or Delete to remove their birthday after confirming.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "app.upcoming_birthdays",
+      "category": "app_help",
+      "question": "How do I see upcoming birthdays?",
+      "answer": "The Upcoming birthdays section lists saved birthdays in date order and shows how many days remain until each birthday.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "app.notes_gift_ideas",
+      "category": "app_help",
+      "question": "Can I add notes or gift ideas?",
+      "answer": "Yes. Open a birthday record and use the Notes or gift ideas field to save helpful details for later.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "app.search_people",
+      "category": "app_help",
+      "question": "Can I search for someone?",
+      "answer": "Use the search field to find people by name or matching relationship and notes, or use the relationship filter to narrow the list.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "reminders.background_notifications",
+      "category": "reminders_and_data",
+      "question": "Will I receive a notification if the app is closed?",
+      "answer": "The current standalone app shows reminders while you use it. It does not send background notifications while closed.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "data.backup",
+      "category": "reminders_and_data",
+      "question": "How do I back up my birthdays?",
+      "answer": "Select Backup to download a JSON backup file. Keep it somewhere secure so you can restore your saved birthdays later.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "data.restore_backup",
+      "category": "reminders_and_data",
+      "question": "How do I restore a backup?",
+      "answer": "Select Import, choose a Birthday Book backup file, review the records, and choose whether to merge them or replace existing records.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "data.local_storage",
+      "category": "reminders_and_data",
+      "question": "Where is my birthday data stored?",
+      "answer": "The current version stores records in your browser's local storage. Data persistence can vary when the HTML file is opened directly, so export backups regularly.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "data.multidevice",
+      "category": "reminders_and_data",
+      "question": "Can I use the app on another device?",
+      "answer": "You can transfer a backup to another device and import it. The current version does not automatically synchronise records between devices.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "assistant.birthday_message",
+      "category": "birthday_assistance",
+      "question": "Help me write a birthday message.",
+      "answer": "Of course! Tell me who the message is for, your relationship with them, and whether you want it to sound heartfelt, funny, casual, or professional.",
+      "approved": true,
+      "response_mode": "ai_followup"
+    },
+    {
+      "id": "assistant.gift_suggestions",
+      "category": "birthday_assistance",
+      "question": "Can you suggest a birthday gift?",
+      "answer": "Yes. Tell me the person's interests, your relationship, and your approximate budget. I'll suggest thoughtful options based on those details.",
+      "approved": true,
+      "response_mode": "ai_followup"
+    },
+    {
+      "id": "assistant.birthday_planning",
+      "category": "birthday_assistance",
+      "question": "Help me plan a birthday.",
+      "answer": "I can help you create a simple plan. Tell me the birthday date, the person's interests, your budget, and whether you prefer a celebration at home or outside.",
+      "approved": true,
+      "response_mode": "ai_followup"
+    },
+    {
+      "id": "assistant.week_before_checklist",
+      "category": "birthday_assistance",
+      "question": "What should I do a week before a birthday?",
+      "answer": "Confirm your plans, shortlist gifts, arrange any reservations or deliveries, and draft a birthday message. Adjust the checklist to suit the person and occasion.",
+      "approved": true,
+      "response_mode": "ai_followup"
+    },
+    {
+      "id": "app.save_birthday_boundary",
+      "category": "app_help_and_boundaries",
+      "question": "Can you remember a person's birthday for me?",
+      "answer": "You can save the birthday in Birthday Book. The current app can display upcoming dates, but the chatbot should not claim it has saved a record unless it is connected to the app's data and confirms the save.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "data.list_access_boundary",
+      "category": "app_help_and_boundaries",
+      "question": "Can you show me all my saved birthdays?",
+      "answer": "I can explain how to view your birthday list. To retrieve actual saved records, the chatbot must be securely connected to your app's data.",
+      "approved": true,
+      "response_mode": "approved_answer"
+    },
+    {
+      "id": "fallback.unknown_question",
+      "category": "fallback",
+      "question": "What if you don't know the answer?",
+      "answer": "I don't have enough information to answer that confidently. I can explain the app's supported features or help you rephrase your question.",
+      "approved": true,
+      "response_mode": "fallback"
+    }
+  ]
+}

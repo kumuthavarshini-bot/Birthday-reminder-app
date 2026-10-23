@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/Presentation/birthday_app_ai_orchestrator_workflow.html"
+    },
+    {
+      "source": "/birthday",
+      "destination": "/src/index.html"
+    },
+    {
+      "source": "/birthday/",
+      "destination": "/src/index.html"
+    }
+  ]
+}
